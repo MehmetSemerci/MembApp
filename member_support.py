@@ -25,7 +25,7 @@ from tkinter import messagebox
 
 import MySQLdb
 #dataBase connection
-db = MySQLdb.connect(host='somebody',user='else',passwd='s',db='lover')
+db = MySQLdb.connect(host='35.204.26.147',user='root',passwd='ieee2018',db='ieee_uye')
 
 cur = db.cursor()
 
@@ -197,16 +197,57 @@ def pushCreateEvent():
     sys.stdout.flush()
 
 def pushEditCheck():
-    print('member_support.pushEditCheck')
-    sys.stdout.flush()
+    if(editCheck.get()=="1"):
+        w.entryEditName.configure(state="normal")
+        w.entryEditUID.configure(state="normal")
+        w.entryEditSurname.configure(state="normal")
+        w.entryEditSchool.configure(state="normal")
+        w.entryEditPhone.configure(state="normal")
+    else:
+        w.entryEditName.configure(state="disabled")
+        w.entryEditUID.configure(state="disabled")
+        w.entryEditSurname.configure(state="disabled")
+        w.entryEditSchool.configure(state="disabled")
+        w.entryEditPhone.configure(state="disabled")
+
+
+def editUIDSchoolReturn(p1):
+    command = "SELECT * FROM memberList WHERE UID ="+txtEditNum.get()+";"
+    cur.execute(command)
+    results = cur.fetchall()
+    command = "SELECT * FROM memberList WHERE schoolID ="+txtEditNum.get()+";"
+    cur.execute(command)
+    results1= cur.fetchall()
+    if(results!=() or results1!=()):
+        if(results!=()):
+            for row in results:
+                UID = row[0]
+                name = row[1]
+                surname = row[2]
+                schoolID = row[3]
+                phone = row[4]
+        else:
+            for row in results1:
+                UID = row[0]
+                name = row[1]
+                surname = row[2]
+                schoolID = row[3]
+                phone = row[4] 
+        txtEditName.set(name)
+        txtEditSurname.set(surname)
+        txtEditSchoolID.set(schoolID)
+        txtEditUID.set(UID)
+        txtEditPhone.set(phone)
+
+
 
 def pushEditMember():
-    print('member_support.pushEditMember')
-    sys.stdout.flush()
+    w.frameEditMember.place(relx=-0.01, rely=-0.02, relheight=1.05, relwidth=1.01)
+
+
 
 def pushEditRemove():
-    print('member_support.pushEditRemove')
-    sys.stdout.flush()
+    print("heloo")
 
 def pushEditSave():
     print('member_support.pushEditSave')
@@ -268,6 +309,7 @@ def pushLogout():
     w.menubar.entryconfigure("Event Operations",state="disabled")
     w.menubar.entryconfig("Change Password",state="disabled")
     w.menubar.entryconfig("Main Menu",state="disabled")
+    w.TEntry1.focus()
 
 
 def pushMainMenu():
