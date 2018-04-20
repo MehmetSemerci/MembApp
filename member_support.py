@@ -25,7 +25,7 @@ from tkinter import messagebox
 
 import MySQLdb
 #dataBase connection
-db = MySQLdb.connect(host='35.204.26.147',user='root',passwd='ieee2018',db='ieee_uye')
+db = MySQLdb.connect(host='somebody',user='else',passwd='s',db='lover')
 
 cur = db.cursor()
 
@@ -74,45 +74,14 @@ def set_Tk_var():
     combobox = StringVar()
     global txtAttendanceInfo
     txtAttendanceInfo = StringVar()
+    global txtAttendUID
+    txtAttendUID = StringVar()
 
 def buttonAddReturn(p1):
-    print('member_support.buttonAddReturn')
-    sys.stdout.flush()
+    pushAddMemberButton()
 
 def loginButtonReturn(p1):
-    if(txtLoginSchoolID.get()=="" or txtLoginPassword.get()==""):
-        if(txtLoginSchoolID.get()==""):
-            messagebox.showwarning("Empty School ID","Enter a School ID")
-        else:
-            messagebox.showwarning("Empty Password","Enter a password")
-    if(txtLoginSchoolID.get()!=""):
-        command = "SELECT * FROM userList WHERE schoolID ="+txtLoginSchoolID.get()+";"
-        cur.execute(command)
-        results = cur.fetchall()
-        if(results!=()):
-            for row in results:
-                schoolID = row[0]
-                name = row[1]
-                surname = row[2]
-                password = row[3]
-                admin = row[4]
-            if (txtLoginPassword.get()==password):
-                if(admin==b'\x01'):
-                    messagebox.showinfo("Admin Login","Welcome "+name+" "+surname)
-                    w.frameLogin.pack()
-                    w.menubar.entryconfigure("Member Operations",state="normal")
-                    w.menubar.entryconfigure("Event Operations",state="normal")
-                    w.menubar.entryconfig("Change Password",state="normal")
-
-                else:
-                    messagebox.showinfo("User Login","Welcome "+name+" "+surname)
-                    w.frameLogin.pack()
-                    w.menubar.entryconfig("Change Password",state="normal")
-            else:
-                if(txtLoginPassword.get()!=""):
-                    messagebox.showwarning("Wrong","Wrong Password")
-        else:
-            messagebox.showwarning("Not found!","User not found")
+    pushLoginButton()
 
 def pushLoginButton():
     if(txtLoginSchoolID.get()=="" or txtLoginPassword.get()==""):
@@ -145,9 +114,10 @@ def pushLoginButton():
                     w.menubar.entryconfig("Change Password",state="normal")
             else:
                 if(txtLoginPassword.get()!=""):
-                    messagebox.showwarning("Wrong","Wrong Password")
+                    messagebox.showwarning("error!","Wrong password or schoolID")
+
         else:
-            messagebox.showwarning("Not found!","User not found")
+            messagebox.showwarning("error!","Wrong password or schoolID")
 
 
 def addUIDReturn(p1):
@@ -168,8 +138,6 @@ def addUIDReturn(p1):
         w.TEntry4.focus()
     
 
-
-
 def pushAddMember():
     w.frameAddMember.place(relx=-0.01, rely=-0.02, relheight=1.05, relwidth=1.01)
     w.TEntry3.focus()
@@ -185,23 +153,41 @@ def pushAddMember():
 
 
 def pushAttendanceOK():
-    print('member_support.pushAttendanceOK')
-    sys.stdout.flush()
-
+    if(combobox.get()!=""):
+        w.frameTakeAttend.place(relx=0.3, rely=0.3, relheight=0.35, relwidth=.5)
+        vals = combobox.get().strip().split(" ")
+        global ID
+        ID = int(vals[0])
+    else:
+        messagebox.showerror("Choose","Choose event")
+    
 def pushChangePassword():
     print('member_support.pushChangePassword')
     sys.stdout.flush()
 
 def pushCreateEvent():
-    print('member_support.pushCreateEvent')
-    sys.stdout.flush()
+    w.frameCreateEvent.place(relx=-0.01, rely=-0.02, relheight=1.05, relwidth=1.01)
+    w.menubar.entryconfigure("Member Operations",state="disabled")
+    w.menubar.entryconfigure("Event Operations",state="disabled")
+    w.menubar.entryconfig("Change Password",state="disabled")
+    w.menubar.entryconfig("Main Menu",state="normal")
+    w.TEntry14.focus()
+    txtCreateEventName.set("")
+    txtCreateDate.set("")
+    txtCreateSociety.set("")
+
+def pushButtonCreateEvent():
+    command = "INSERT INTO eventList (name, society, date) VALUES ('"+txtCreateEventName.get()+"', '"+txtCreateSociety.get()+"', '"+txtCreateDate.get()+"');"
+    cur.execute(command)
+    db.commit()
+    messagebox.showinfo("Created","Event created")
 
 def pushEditCheck():
     if(editCheck.get()=="1"):
         w.entryEditName.configure(state="normal")
         w.entryEditUID.configure(state="normal")
         w.entryEditSurname.configure(state="normal")
-        w.entryEditSchool.configure(state="normal")
+        w.entryEditSchool.configure(state="disabled")
         w.entryEditPhone.configure(state="normal")
     else:
         w.entryEditName.configure(state="disabled")
@@ -238,20 +224,55 @@ def editUIDSchoolReturn(p1):
         txtEditSchoolID.set(schoolID)
         txtEditUID.set(UID)
         txtEditPhone.set(phone)
-
+    else:
+        messagebox.showerror("Not Found!","Member not found!")
 
 
 def pushEditMember():
     w.frameEditMember.place(relx=-0.01, rely=-0.02, relheight=1.05, relwidth=1.01)
-
+    w.menubar.entryconfigure("Member Operations",state="disabled")
+    w.menubar.entryconfigure("Event Operations",state="disabled")
+    w.menubar.entryconfig("Change Password",state="disabled")
+    w.menubar.entryconfig("Main Menu",state="normal")
+    w.TEntry8.focus()
+    txtEditNum.set("")
+    txtEditName.set("")
+    txtEditSurname.set("")
+    txtEditSchoolID.set("")
+    txtEditUID.set("")
+    txtEditPhone.set("")
+    editCheck.set("0")
 
 
 def pushEditRemove():
-    print("heloo")
+    if(editCheck.get()!='1'):
+        if(txtEditSchoolID.get()!=""):
+            if (messagebox.askokcancel("Continue?","Member will be deleted?")):
+                command = "DELETE FROM memberList WHERE schoolID ="+txtEditSchoolID.get()+";"
+                cur.execute(command)
+                db.commit()
+                messagebox.showinfo("Succesful!","Succesfully deleted!")
+                txtEditName.set("")
+                txtEditSurname.set("")
+                txtEditSchoolID.set("")
+                txtEditUID.set("")
+                txtEditPhone.set("")
+        else:
+            messagebox.showwarning("Error","Empty School ID!")
+    else:
+        messagebox.showwarning("Error","You are in editing mode!")
+        w.TCheckbutton1.focus()
+
 
 def pushEditSave():
-    print('member_support.pushEditSave')
-    sys.stdout.flush()
+    if(editCheck.get()=='1'):
+        if (messagebox.askokcancel("Continue?","New credientals will be saved?")):
+            command="UPDATE memberList SET UID='"+txtEditUID.get()+"', name='"+txtEditName.get()+"', surname='"+txtEditSurname.get()+"', phone='"+txtEditPhone.get()+"' WHERE schoolID="+txtEditSchoolID.get()+";"
+            cur.execute(command)
+            db.commit()
+    else:
+        messagebox.showwarning("Error","You are not in editing mode")
+
 
 def pushEventList():
     print('member_support.pushEventList')
@@ -278,7 +299,6 @@ def pushAddMemberButton():
         w.TEntry3.focus()
     else:
         command = "INSERT INTO memberList (UID, name, surname, schoolID, phone) VALUES ("+adder+"');"
-        print(command)
         cur.execute(command)
         db.commit()
         command="SELECT * FROM memberList WHERE UID ="+txtAddUID.get()+";"
@@ -335,15 +355,44 @@ def pushSavePassword():
     sys.stdout.flush()
 
 def pushTakeAttend():
-    print('member_support.pushTakeAttend')
-    sys.stdout.flush()
+    w.frameAttendance.place(relx=-0.01, rely=-0.02, relheight=1.05, relwidth=1.01)
+    w.menubar.entryconfigure("Member Operations",state="disabled")
+    w.menubar.entryconfigure("Event Operations",state="disabled")
+    w.menubar.entryconfig("Change Password",state="disabled")
+    w.menubar.entryconfig("Main Menu",state="normal") 
+    command = "SELECT ID, name FROM eventList;"
+    cur.execute(command)
+    results = cur.fetchall() 
+    w.value_list=results
+    w.TCombobox1.configure(values=w.value_list)
+
+def takeAttendUIDReturn(p1):
+    command = "SELECT * FROM memberList WHERE UID ='"+txtAttendUID.get()+"';"
+    print(txtAttendUID.get())
+    cur.execute(command)
+    results = cur.fetchall()
+    print(results)
+    if(results!=()):
+        for row in results:
+            schoolID = row[3]
+        command = "SELECT * FROM eventList WHERE ID ="+str(ID)+";"
+        cur.execute(command)
+        results = cur.fetchall()
+        print(results)
+        for row in results:
+            members = row[4]
+        command="UPDATE eventList SET members='"+str(members)+"' '"+" "+str(schoolID)+"' WHERE ID='"+str(ID)+"';"
+        cur.execute(command)
+        db.commit()
+    else:
+        messagebox.showerror("Not on the list","UID not on the list")
 
 def init(top, gui, *args, **kwargs):
     global w, top_level, root
     w = gui
     top_level = top
     root = top
-
+    
 def destroy_window():
     # Function which closes the window.
     global top_level
