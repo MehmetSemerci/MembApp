@@ -341,6 +341,7 @@ class IEEE_METU_NCC_Member_System:
         self.TEntry8.configure(textvariable=member_support.txtEditNum)
         self.TEntry8.configure(takefocus="")
         self.TEntry8.configure(cursor="ibeam")
+        self.TEntry8.bind('<Return>',lambda e:member_support.editUIDSchoolReturn(e))
 
         self.entryEditUID = ttk.Entry(self.frameEditMember)
         self.entryEditUID.place(relx=0.4, rely=0.29, relheight=0.05
@@ -520,7 +521,7 @@ class IEEE_METU_NCC_Member_System:
 
         self.TButton6 = ttk.Button(self.frameCreateEvent)
         self.TButton6.place(relx=0.28, rely=0.48, height=30, width=206)
-        self.TButton6.configure(command=member_support.pushCreateEvent)
+        self.TButton6.configure(command=member_support.pushButtonCreateEvent)
         self.TButton6.configure(takefocus="")
         self.TButton6.configure(text='''Create Event''')
 
@@ -580,6 +581,9 @@ class IEEE_METU_NCC_Member_System:
         self.TEntry17.place(relx=0.37, rely=0.4, relheight=0.12, relwidth=0.42)
         self.TEntry17.configure(takefocus="1")
         self.TEntry17.configure(cursor="ibeam")
+        self.TEntry17.configure(textvariable=member_support.txtAttendUID)
+        self.TEntry17.bind('<Return>',lambda e:member_support.takeAttendUIDReturn(e))
+
 
         self.TLabel21 = ttk.Label(self.frameTakeAttend)
         self.TLabel21.place(relx=0.15, rely=0.4, height=19, width=57)
