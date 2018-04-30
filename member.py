@@ -205,6 +205,7 @@ class IEEE_METU_NCC_Member_System:
         self.TEntry2.configure(takefocus="")
         self.TEntry2.configure(show="*")
         self.TEntry2.configure(cursor="ibeam")
+        self.TEntry2.bind('<Return>',lambda e:member_support.loginButtonReturn(e))
 
         self.TButton2 = ttk.Button(self.frameLogin)
         self.TButton2.place(relx=0.32, rely=0.53, height=30, width=209)
