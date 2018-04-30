@@ -157,7 +157,7 @@ def pushAttendanceOK():
         w.frameTakeAttend.place(relx=0.3, rely=0.3, relheight=0.35, relwidth=.5)
         vals = combobox.get().strip().split(" ")
         global ID
-        ID = int(vals[0])
+        ID = int(vals[2])
     else:
         messagebox.showerror("Choose","Choose event")
     
@@ -177,7 +177,7 @@ def pushCreateEvent():
     txtCreateSociety.set("")
 
 def pushButtonCreateEvent():
-    command = "INSERT INTO eventList (name, society, date) VALUES ('"+txtCreateEventName.get()+"', '"+txtCreateSociety.get()+"', '"+txtCreateDate.get()+"');"
+    command = "INSERT INTO eventList (name, society, date, members) VALUES ('"+txtCreateEventName.get()+"', '"+txtCreateSociety.get()+"', '"+txtCreateDate.get()+"', ' ');"
     cur.execute(command)
     db.commit()
     messagebox.showinfo("Created","Event created")
@@ -229,7 +229,13 @@ def editUIDSchoolReturn(p1):
 
 
 def pushEditMember():
+    
     w.frameEditMember.place(relx=-0.01, rely=-0.02, relheight=1.05, relwidth=1.01)
+    w.entryEditName.configure(state="disabled")
+    w.entryEditUID.configure(state="disabled")
+    w.entryEditSurname.configure(state="disabled")
+    w.entryEditSchool.configure(state="disabled")
+    w.entryEditPhone.configure(state="disabled")
     w.menubar.entryconfigure("Member Operations",state="disabled")
     w.menubar.entryconfigure("Event Operations",state="disabled")
     w.menubar.entryconfig("Change Password",state="disabled")
@@ -313,6 +319,7 @@ def pushAddMemberButton():
             messagebox.showinfo("Success!",UID+" "+name+" "+surname)
         else:
             messagebox.showerror("Error","Error not added!")
+    txtLabelAddInfo.set(name+" "+surname+"added")
     txtAddName.set("")
     txtAddPhone.set("")
     txtAddSchoolID.set("")
@@ -360,7 +367,7 @@ def pushTakeAttend():
     w.menubar.entryconfigure("Event Operations",state="disabled")
     w.menubar.entryconfig("Change Password",state="disabled")
     w.menubar.entryconfig("Main Menu",state="normal") 
-    command = "SELECT ID, name FROM eventList;"
+    command = "SELECT date, name, ID FROM eventList;"
     cur.execute(command)
     results = cur.fetchall() 
     w.value_list=results
@@ -371,6 +378,9 @@ def takeAttendUIDReturn(p1):
     print(txtAttendUID.get())
     cur.execute(command)
     results = cur.fetchall()
+    for row in results:
+        name = row[1]
+        surname = row[2]
     print(results)
     if(results!=()):
         for row in results:
@@ -384,6 +394,9 @@ def takeAttendUIDReturn(p1):
         command="UPDATE eventList SET members='"+str(members)+"' '"+" "+str(schoolID)+"' WHERE ID='"+str(ID)+"';"
         cur.execute(command)
         db.commit()
+        txtAttendanceInfo.set(name + " " +surname+" added!")
+        txtAttendUID.set("")
+        w.TEntry17.focus()
     else:
         messagebox.showerror("Not on the list","UID not on the list")
 
