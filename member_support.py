@@ -25,7 +25,7 @@ from tkinter import messagebox
 
 import MySQLdb
 #dataBase connection
-db = MySQLdb.connect(host='somebody',user='else',passwd='s',db='lover')
+db = MySQLdb.connect(host='35.204.26.147',user='root',passwd='ieee2018',db='ieee_uye')
 
 cur = db.cursor()
 
@@ -319,7 +319,7 @@ def pushAddMemberButton():
             messagebox.showinfo("Success!",UID+" "+name+" "+surname)
         else:
             messagebox.showerror("Error","Error not added!")
-    txtLabelAddInfo.set(name+" "+surname+"added")
+    txtLabelAddInfo.set(name+" "+surname+" added")
     txtAddName.set("")
     txtAddPhone.set("")
     txtAddSchoolID.set("")
