@@ -25,7 +25,7 @@ from tkinter import messagebox
 
 import MySQLdb
 #dataBase connection
-db = MySQLdb.connect(host='35.204.26.147',user='root',passwd='ieee2018',db='ieee_uye')
+db = MySQLdb.connect(host='somebody',user='else',passwd='s',db='lover')
 
 cur = db.cursor()
 
