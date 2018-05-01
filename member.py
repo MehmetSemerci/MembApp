@@ -270,6 +270,7 @@ class IEEE_METU_NCC_Member_System:
         self.TEntry7.configure(textvariable=member_support.txtAddPhone)
         self.TEntry7.configure(takefocus="")
         self.TEntry7.configure(cursor="ibeam")
+        self.TEntry7.bind('<Return>',lambda e:member_support.buttonAddReturn(e))
 
         self.buttonAddMember = ttk.Button(self.frameAddMember)
         self.buttonAddMember.place(relx=0.32, rely=0.7, height=30, width=190)
