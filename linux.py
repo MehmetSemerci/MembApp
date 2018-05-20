@@ -82,7 +82,7 @@ class IEEE_METU_NCC_Member_System:
         self.labelBackground.configure(foreground="#000000")
         self.labelBackground.configure(highlightbackground="#d9d9d9")
         self.labelBackground.configure(highlightcolor="black")
-        self._img1 = PhotoImage(file="../Untitled-1.png")
+        self._img1 = PhotoImage(file="Untitled-1.png")
         self.labelBackground.configure(image=self._img1)
         self.labelBackground.configure(text='''Label''')
 
